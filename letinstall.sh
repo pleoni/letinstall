@@ -134,6 +134,8 @@ function install_flash
 			fi
 
 		$INST_C $inst_opt install flash-plugin
+		dnf config-manager --set-disabled adobe-linux-x86_64
+
 	fi
 
 }
@@ -1027,6 +1029,7 @@ then
 			cp google-chrome.repo /etc/yum.repos.d/google-chrome.repo
 			rm google-chrome.repo
 			$INST_C $inst_opt install google-chrome-stable
+			dnf config-manager --set-disabled google-chrome
 		fi
 fi
 }
@@ -1093,6 +1096,7 @@ then
 		mv virtualbox.repo /etc/yum.repos.d/
 		$INST_C $inst_opt install VirtualBox-5.0 kernel-devel kernel-headers gcc dkms
 		usermod -a -G vboxusers $USER
+		dnf config-manager --set-disabled virtualbox
 	fi
 fi
 }
