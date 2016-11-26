@@ -1094,7 +1094,7 @@ then
 
 		wget http://download.virtualbox.org/virtualbox/rpm/fedora/virtualbox.repo
 		mv virtualbox.repo /etc/yum.repos.d/
-		$INST_C $inst_opt install VirtualBox-5.0 kernel-devel kernel-headers gcc dkms
+		$INST_C $inst_opt install VirtualBox-5.1 kernel-devel kernel-headers gcc dkms
 		usermod -a -G vboxusers $USER
 		dnf config-manager --set-disabled virtualbox
 	fi
