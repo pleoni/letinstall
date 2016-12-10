@@ -1347,6 +1347,8 @@ then
 
 	mv user-custom-boot.service /etc/systemd/system/
 
+	/sbin/restorecon -v /etc/systemd/system/user-custom-boot.service
+
 	systemctl enable user-custom-boot.service
 
 fi
