@@ -72,6 +72,7 @@ DUCKDNS_VAL="0" ###DUCKDNS###
 OWNCL_VAL="0" ###OWNCLOUD CLIENT###
 GNOME_SW="0" ### GNOME APPS ###
 POLUTILS="0" ### POL UTILS ###
+SELINUX_DISABLE="0" ##DISABLE SELINUX##
 
 SPOL_UTILS="0" ### SERVER POL UTILS ###
 PWT_VAL="0" ### Powertop on boot - PLEASE NOTE: test manually first, use command "powertop --auto-tune" as root.
@@ -113,6 +114,11 @@ echo
 }
 
 #####FUNCTIONS BLOCK#####
+
+function disable_selinux
+{
+	sed -i "s%enforcing%disabled%g" /etc/sysconfig/selinux 
+}
 
 function install_flash
 {
@@ -207,28 +213,27 @@ then
 			echo "Installing Pol Utils..."
 			echo "#######################"
 
-			wget $PLEONI_WEB/PolRepo/SimpleBackup
+	
+			git clone $PLEONI_GIT_REPO/simple_backup
+			cp simple_backup/simple_backup /usr/sbin/simple_backup
+			chmod +x /usr/sbin/simple_backup
+			rm -fr simple_backup
+
+			git clone $PLEONI_GIT_REPO/webm_converter
+			cp webm_converter/webm_converter /usr/sbin/webm_converter
+			chmod +x /usr/sbin/webm_converter
+			rm -fr webm_converter
+
 			wget $PLEONI_WEB/PolRepo/ytHelper
-			wget $PLEONI_WEB/PolRepo/webm_converter			
-
-			chmod +x SimpleBackup
-			chmod +x ytHelper
-			chmod +x webm_converter	
-
-			cp SimpleBackup /usr/sbin/SimpleBackup
 			cp ytHelper /usr/sbin/ytHelper
-			cp webm_converter /usr/sbin/webm_converter
-
-			rm SimpleBackup
-			rm ytHelper 
-			rm webm_converter
+			rm ytHelper
 
 			touch SimpleBackup.desktop
 
 			echo '[Desktop Entry]' >> SimpleBackup.desktop
 			echo 'Encoding=UTF-8' >> SimpleBackup.desktop
 			echo 'Name=Simple Backup' >> SimpleBackup.desktop
-			echo 'Exec=/usr/sbin/SimpleBackup' >> SimpleBackup.desktop
+			echo 'Exec=/usr/sbin/simple_backup' >> SimpleBackup.desktop
 			echo 'Type=Application' >> SimpleBackup.desktop
 
 			chown $USER SimpleBackup.desktop
@@ -1209,7 +1214,8 @@ options=(1 "Update" on    # any option can be set to default to "on"
          18 "PolUtils" off
          19 "DevelTools" off
          20 "ServerTools" off
-         21 "ServerPolUtils" off) 
+         21 "ServerPolUtils" off
+	 22 "DisableSELINUX" off)
 choices=$("${cmd[@]}" "${options[@]}" 2>&1 >/dev/tty)
 
 clear
@@ -1298,6 +1304,10 @@ do
 
 	21)
 		SPOL_UTILS="1"
+	;;
+
+	22)
+		SELINUX_DISABLE="1"
 	;;
 	esac
 done
@@ -1420,6 +1430,12 @@ install_antivirus
 
 ###Power management tools###
 install_pwm
+
+###Disable SELINUX###
+if [[ $SELINUX_DISABLE == "1" ]]
+then
+	disable_selinux
+fi
 
 ### CUSTOM RPM INSTALLATION ###
 echo
