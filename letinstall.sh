@@ -37,6 +37,7 @@ PROGNAME="LETInstall"
 VERSION="25"
 REL=`more /etc/redhat-release`
 PLEONI_WEB="http://paololeoni.altervista.org"
+PLEONI_GIT_REPO="https://github.com/pleoni"
 
 INST_C="dnf"
 inst_opt="-y --setopt=strict=0"
